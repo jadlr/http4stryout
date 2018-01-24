@@ -9,12 +9,19 @@ import org.http4s.server.blaze._
 
 object Main extends StreamApp[Task] with Http4sDsl[Task] {
 
-  private val elasticsearchClient: ElasticsearchClient[Task] = new EffectElasticsearchClient[Task]("localhost", 9201)
-  private val elasticsearchService: ElasticsearchService[Task] = new ElasticsearchService[Task](elasticsearchClient)
+  override def stream(args: List[String], requestShutdown: Task[Unit]): Stream[Task, ExitCode] = (for {
+    config              ← ApplicationConfig[Task]
+    elasticsearchClient ← EffectElasticsearchClient[Task](config.elasticsearchUrl)
+    ctpClient           ← EffectCtpClient[Task](config.authWsUrl, config.ctpClientId, config.ctpClientSecret)
+  } yield {
 
-  override def stream(args: List[String], requestShutdown: Task[Unit]): Stream[Task, ExitCode] =
+    val elasticsearchService = new ElasticsearchService[Task](elasticsearchClient)
+
     BlazeBuilder[Task]
       .bindHttp(8080, "localhost")
       .mountService(elasticsearchService.routes, "/")
       .serve
+
+  }).toIO.unsafeRunSync()
+
 }
