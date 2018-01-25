@@ -38,7 +38,7 @@ class ElasticsearchService[F[_]: Effect](client: ElasticsearchClient[F]) extends
   }
 
   //TODO convert our DSL into ES DSL here
-  def search(index: String, query: Json): F[List[String]] = client.search(index, query.spaces2).map { result ⇒
+  def search(index: String, query: Json): F[List[String]] = client.search(index, query).map { result ⇒
     result.hits.hits.map(_.id)
   }
 

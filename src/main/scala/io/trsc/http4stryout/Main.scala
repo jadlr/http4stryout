@@ -15,11 +15,14 @@ object Main extends StreamApp[Task] with Http4sDsl[Task] {
     ctpClient           ← EffectCtpClient[Task](config.authWsUrl, config.ctpClientId, config.ctpClientSecret)
   } yield {
 
+    val authService = new AuthenticationService[Task](ctpClient)
     val elasticsearchService = new ElasticsearchService[Task](elasticsearchClient)
+
+    val securedEndpoint = authService.secure(elasticsearchService.routes)
 
     BlazeBuilder[Task]
       .bindHttp(8080, "localhost")
-      .mountService(elasticsearchService.routes, "/")
+      .mountService(securedEndpoint, "/")
       .serve
 
   }).toIO.unsafeRunSync()

@@ -2,9 +2,9 @@ package io.trsc.http4stryout
 
 import cats.effect._
 import cats.implicits._
-import io.circe.Decoder
+import io.circe.{Decoder, Json}
 import io.trsc.http4stryout.ElasticsearchModel.{Health, Results}
-import org.http4s.circe.jsonOf
+import org.http4s.circe._
 import org.http4s.client.Client
 import org.http4s.client.blaze.Http1Client
 import org.http4s.client.dsl.Http4sClientDsl
@@ -13,7 +13,7 @@ import org.http4s.{EntityDecoder, Uri}
 
 trait ElasticsearchClient[F[_]] {
   def health(): F[Health]
-  def search(index: String, query: String): F[Results]
+  def search(index: String, query: Json): F[Results]
 }
 
 class EffectElasticsearchClient[F[_] : Effect](client: Client[F], elasticsearchUrl: String)
@@ -28,7 +28,7 @@ class EffectElasticsearchClient[F[_] : Effect](client: Client[F], elasticsearchU
   def health(): F[Health] =
     client.expect[Health](endpoint.withPath("/_cluster/health"))
 
-  def search(index: String, query: String): F[Results] =
+  def search(index: String, query: Json): F[Results] =
     client.expect[Results](POST(endpoint.withPath(s"/$index/_search"), query))
 
 }
