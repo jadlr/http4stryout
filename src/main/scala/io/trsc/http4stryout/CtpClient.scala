@@ -10,7 +10,7 @@ import org.http4s.client.blaze.Http1Client
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.dsl.Http4sDsl
 import org.http4s.headers.Authorization
-import org.http4s.{BasicCredentials, EntityDecoder, Headers, Method, Request, Response, Status, Uri, UrlForm}
+import org.http4s.{BasicCredentials, EntityDecoder, Headers, Method, Request, Uri, UrlForm}
 
 trait CtpClient[F[_]] {
   def token(scope: String): F[Token]
