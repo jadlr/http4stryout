@@ -48,10 +48,7 @@ class EffectCtpClient[F[_]: Effect](client: Client[F], authWsUrl: String, id: St
       "token" → token
     ))
 
-    client.fetch(req) {
-      case r @ Response(Status.Ok, _, _, _, _) ⇒ r.as[TokenMeta].map(_.some)
-      case _                                   ⇒ none[TokenMeta].pure[F]
-    }
+    client.fetch(req)(_.attemptAs[TokenMeta].toOption.value)
   }
 }
 
