@@ -25,6 +25,6 @@ object Main extends StreamApp[Task] with Http4sDsl[Task] {
       .mountService(securedEndpoint, "/")
       .serve
 
-  }).toIO.unsafeRunSync()
+  }).coeval.value.fold(_ ⇒ throw new Exception("failed to initialize"), identity)
 
 }
