@@ -7,6 +7,9 @@ import monix.execution.Scheduler.Implicits.global
 import org.http4s.dsl._
 import org.http4s.server.blaze._
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
 object Main extends StreamApp[Task] with Http4sDsl[Task] {
 
   override def stream(args: List[String], requestShutdown: Task[Unit]): Stream[Task, ExitCode] = (for {
@@ -25,6 +28,9 @@ object Main extends StreamApp[Task] with Http4sDsl[Task] {
       .mountService(securedEndpoint, "/")
       .serve
 
-  }).coeval.value.fold(_ ⇒ throw new Exception("failed to initialize"), identity)
+  }).coeval.value.fold(
+    cancelableFuture ⇒ Await.result(cancelableFuture, 10 seconds),
+    identity
+  )
 
 }
