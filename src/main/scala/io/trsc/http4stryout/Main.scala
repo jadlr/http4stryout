@@ -15,7 +15,7 @@ object Main extends StreamApp[Task] with Http4sDsl[Task] {
   override def stream(args: List[String], requestShutdown: Task[Unit]): Stream[Task, ExitCode] = (for {
     config              ← ApplicationConfig[Task]
     elasticsearchClient ← EffectElasticsearchClient[Task](config.elasticsearchUrl)
-    ctpClient           ← EffectCtpClient[Task](config.authWsUrl, config.ctpClientId, config.ctpClientSecret)
+    ctpClient           ← CachedEffectCtpClient[Task](config.authWsUrl, config.ctpClientId, config.ctpClientSecret)
   } yield {
 
     val authService = new AuthenticationService[Task](ctpClient)
