@@ -2,13 +2,13 @@ import sbt._
 
 object Dependencies {
 
-  private val CatsVersion       = "1.0.1"
-  private val CatsEffectVersion = "0.8"
-  private val Http4sVersion     = "0.18.1"
-  private val MonixVersion      = "3.0.0-M3"
-  private val CirceVersion      = "0.9.1"
-  private val PureConfigVersion = "0.9.0"
-  private val ScalacacheVersion = "0.22.0"
+  private val CatsVersion       = "1.1.0"
+  private val CatsEffectVersion = "0.10"
+  private val Http4sVersion     = "0.18.7"
+  private val MonixVersion      = "3.0.0-RC1"
+  private val CirceVersion      = "0.9.3"
+  private val PureConfigVersion = "0.9.1"
+  private val ScalacacheVersion = "0.23.0"
   private val LogbackVersion    = "1.2.3"
 
   lazy val runtimeDeps: Seq[ModuleID] = Seq(
@@ -29,7 +29,7 @@ object Dependencies {
   )
 
   lazy val testDeps: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % "3.0.4"
+    "org.scalatest" %% "scalatest" % "3.0.5"
   ).map(_ % Test)
 
 }
