@@ -17,8 +17,7 @@ object Main extends StreamApp[Task] with Http4sDsl[Task] {
     elasticsearchClient ← EffectElasticsearchClient[F](config.elasticsearchUrl)
     ctpClient           ← CachedEffectCtpClient[F](config.authWsUrl, config.ctpClientId, config.ctpClientSecret)
   } yield {
-
-    val authService = new AuthenticationService[F](ctpClient)
+    val authService          = new AuthenticationService[F](ctpClient)
     val elasticsearchService = new ElasticsearchService[F](elasticsearchClient)
 
     authService.secure(elasticsearchService.routes)
