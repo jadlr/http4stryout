@@ -10,9 +10,6 @@ import org.http4s.HttpService
 import org.http4s.dsl._
 import org.http4s.server.blaze._
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 object Main extends StreamApp[Task] with Http4sDsl[Task] {
 
   def init[F[_]: Effect]: F[HttpService[F]] = for {
@@ -28,14 +25,11 @@ object Main extends StreamApp[Task] with Http4sDsl[Task] {
   }
 
   override def stream(args: List[String], requestShutdown: Task[Unit]): Stream[Task, ExitCode] = {
-    init[Task].map { service ⇒
+    Stream.eval(init[Task]).flatMap { service ⇒
       BlazeBuilder[Task]
         .bindHttp(8080, "localhost")
         .mountService(service, "/")
         .serve
-    }.coeval.value.fold(
-      cancelableFuture ⇒ Await.result(cancelableFuture, 10 seconds),
-      identity
-    )
+    }
   }
 }

@@ -4,7 +4,7 @@ object Dependencies {
 
   private val CatsVersion       = "1.1.0"
   private val CatsEffectVersion = "0.10"
-  private val Http4sVersion     = "0.18.7"
+  private val Http4sVersion     = "0.18.12"
   private val MonixVersion      = "3.0.0-RC1"
   private val CirceVersion      = "0.9.3"
   private val PureConfigVersion = "0.9.1"
